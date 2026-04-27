@@ -1,8 +1,7 @@
 import gradio as gr
 from groq import Groq
 
-import os
-client = Groq(api_key=os.environ.get("API"))
+client = Groq(api_key="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")
 
 def generate_assignment(subject, topic, level):
     if not topic:
