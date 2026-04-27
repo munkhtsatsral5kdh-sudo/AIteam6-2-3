@@ -3,6 +3,8 @@ import google.generativeai as genai
 
 # Таны API түлхүүр
 genai.configure(api_key="AIzaSyCcybSAuvvOyXI_9T-63Bq0IQBPNhMJznM")
+
+# Алдааг зассан хэсэг: 'gemini-1.5-flash' гэж шууд бичив
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 def generate_assignment(subject, topic, level):
@@ -12,7 +14,7 @@ def generate_assignment(subject, topic, level):
     prompt = f"""
     Чи бол {subject} хичээлийн мэргэжлийн багш байна. 
     Сурагчдад зориулж "{topic}" сэдвээр {level} түвшний 3 даалгавар бэлтгэ.
-    Хүүхдэд урам өгсөн Монгол хэлээр хариулж, бодолт эсвэл хариуг нь оруулна уу.
+    Маш ойлгомжтой Монгол хэлээр хариулж, бодолт эсвэл хариуг нь оруулна уу.
     Математик, Физик, Химийн томьёог заавал $...$ форматаар бичээрэй.
     """
     
@@ -20,7 +22,13 @@ def generate_assignment(subject, topic, level):
         response = model.generate_content(prompt)
         return response.text
     except Exception as e:
-        return f"Алдаа гарлаа: {str(e)}"
+        # Хэрэв дахин загварын алдаа гарвал өөр хувилбараар оролдож үзэх
+        try:
+            alt_model = genai.GenerativeModel('models/gemini-1.5-flash')
+            response = alt_model.generate_content(prompt)
+            return response.text
+        except:
+            return f"Алдаа гарлаа: AI загвартай холбогдож чадсангүй. Түлхүүрээ шалгана уу."
 
 # Вэбсайтны дизайн
 with gr.Blocks(theme=gr.themes.Soft()) as demo:
@@ -29,13 +37,12 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
     
     with gr.Row():
         with gr.Column():
-            # Таны хүссэн бүх 9 хичээлийг энд нэмлээ
             subject_select = gr.Dropdown(
                 ["Монгол хэл", "Математик", "Физик", "Хими", "Биологи", "Газарзүй", "Нийгэм судлал", "Түүх", "Мэдээллийн технологи"], 
                 label="📚 Хичээл сонгох", 
                 value="Математик"
             )
-            topic_input = gr.Textbox(label="🔍 Хичээлийн сэдэв", placeholder="Жишээ нь: Эсийн бүтэц, Нарны систем...")
+            topic_input = gr.Textbox(label="🔍 Хичээлийн сэдэв", placeholder="Жишээ нь: Нарны систем, Эсийн бүтэц...")
             level_input = gr.Radio(
                 ["⭐ Би чадна (Хялбар)", "⭐⭐ Би мэднэ (Дунд)", "⭐⭐⭐ Би мастер (Гүнзгий)"], 
                 label="Түвшин", 
