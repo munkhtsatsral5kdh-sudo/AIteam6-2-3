@@ -31,7 +31,7 @@ def generate_assignment(subject, topic, level):
 
 # Вэб дизайн
 with gr.Blocks(theme=gr.themes.Soft()) as demo:
-    gr.Markdown("# 🎓 Мөнхцацрал багшийн Ухаалаг Платформ")
+    gr.Markdown("# 🎓 Багшийн Ухаалаг Платформ")
     gr.Markdown("### 9 хичээлийн нэгдсэн туслах")
     
     with gr.Row():
